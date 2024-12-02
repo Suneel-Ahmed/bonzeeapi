@@ -20,25 +20,18 @@ class ClickerController extends Controller
         $this->checkBoosterPackExpiration($user);
 
         // Calculate passive earnings for the user and increase balance
-        $passiveEarnings = $user->calcPassiveEarning();
+        // $passiveEarnings = $user->calcPassiveEarning();
 
         // Update login streak
         $user->updateLoginStreak();
 
         // Check and reset daily booster if it's a new day
-        $user->checkAndResetDailyBooster();
 
         // Restore energy
-        $restoredEnergy = $user->restoreEnergy();
 
         // Load the level relationship
-        $user->load('level');
 
-        $canUseDailyBooster = $user->canUseDailyBooster();
 
-        $totalDailyRewards = DailyTask::sum('reward_coins');
-
-        $levels = Level::all();
 
         $missionTypes = MissionType::all();
 
@@ -48,52 +41,9 @@ class ClickerController extends Controller
 
         return response()->json([
             'user' => $user,
-            'restored_energy' => $restoredEnergy,
-            'boosters' => [
-                'multi_tap' => [
-                    'level' => $user->multi_tap_level,
-                    'cost' => $this->getBoosterCost($user, 'multi_tap'),
-                    'increase_by' => 1,
-                ],
-                'energy_limit' => [
-                    'level' => $user->energy_limit_level,
-                    'cost' => $this->getBoosterCost($user, 'energy_limit'),
-                    'increase_by' => 500,
-                ],
-            ],
-            'daily_booster' => [
-                'can_use' => $canUseDailyBooster,
-                'uses_today' => $user->daily_booster_uses,
-                'next_available_at' => $canUseDailyBooster ? now() : ($user->last_daily_booster_use ? $user->last_daily_booster_use->addHour() : null),
-            ],
-            'booster_packs' => [
-                'booster_pack_2x' => [
-                    'cost' => 2,
-                    'duration_days' => 30, 
-                    'multiplier' => 2
-                ],
-                'booster_pack_3x' => [
-                    'cost' => 3,
-                    'duration_days' => 30, 
-                    'multiplier' => 3
-                ],
-                'booster_pack_7x' => [
-                    'cost' => 5,
-                    'duration_days' => 30, 
-                    'multiplier' => 7
-                ]
-            ],
-            'booster_pack_x2' => $user->booster_pack_x2,
-            'booster_pack_x2' => $user->booster_pack_x3,
-            'booster_pack_x2' => $user->booster_pack_x7,
-            'booster_pack_active_until' => $user->booster_pack_active_until,
-            'total_daily_rewards' => $totalDailyRewards,
-            'levels' => $levels,
-            'max_level' => $levels->max('level'),
-            'level_up' => config('clicker.level_up'),
             'referral' => config('clicker.referral'),
             'mission_types' => $missionTypes,
-            'passive_earnings' => $passiveEarnings,
+            
             'total_referals' => $totalReferals,
         ]);
     }

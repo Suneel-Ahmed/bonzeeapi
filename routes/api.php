@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClickerController;
 use App\Http\Controllers\LevelController;
+use App\Http\Controllers\PartnersController;
 use App\Http\Controllers\PopupController;
 use App\Http\Controllers\ReferralTaskController;
 use App\Http\Controllers\TelegramUserController;
@@ -36,15 +37,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('clicker')->group(function () {
         // Sync user data
         Route::get('/sync', [ClickerController::class, 'sync']);
+        
+        
+        // offical partners
+        Route::post('/partners', [PartnersController::class, 'create']);
+        Route::get('/partners', [PartnersController::class, 'get']);
 
-        // Tapping
-        Route::post('/tap', [ClickerController::class, 'tap']);
-
-        // Boosters
-        Route::post('/buy-booster', [ClickerController::class, 'buyBooster']);
-
-        // Booster packs
-        Route::post('/buy-booster-pack', [ClickerController::class, 'buyBoosterPack']);
 
         // Daily tasks
         Route::get('/daily-tasks', [ClickerController::class, 'listDailyTasks']);
@@ -72,7 +70,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('missions', [UserMissionController::class, 'index']);
 
         Route::post('mission-levels/{missionLevel}', [UserMissionController::class, 'store']);
-
+        Route::put('/missions/{id}', [UserMissionController::class, 'update']);
+ 
         Route::post('/test', function (Request $request) {
             $request->validate([
                 'hash' => 'required|string',

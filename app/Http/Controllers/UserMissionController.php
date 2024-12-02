@@ -37,6 +37,34 @@ class UserMissionController extends Controller
         return response()->json($missions);
     }
 
+
+    public function update(Request $request, $id)
+{
+    // Validate the request
+    $validated = $request->validate([
+        'pass' => 'required|integer|in:1', // Ensure 'pass' is present and equals 1
+    ]);
+
+    // Find the mission by ID
+    $mission = Mission::find($id);
+
+    if (!$mission) {
+        return response()->json(['message' => 'Mission not found'], 404);
+    }
+
+    // Update the 'pass' field
+    $mission->pass = $validated['pass'];
+    $mission->save();
+
+    // Return a success response
+    return response()->json(['message' => 'Mission updated successfully', 'mission' => $mission], 200);
+}
+
+
+
+
+
+
     public function store(Request $request, MissionLevel $missionLevel)
     {
         $user = $request->user();

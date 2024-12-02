@@ -54,40 +54,5 @@ class UserTaskController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function claim(Request $request, Task $task)
-    {
-        $user = $request->user();
-
-        $userTask = $user->tasks()->where('task_id', $task->id)->first();
-
-        if (!$userTask) {
-            return response()->json(['success' => false, 'message' => 'Task not found.'], 404);
-        }
-
-        if ($userTask->pivot->is_rewarded) {
-            return response()->json(['success' => false, 'message' => 'Task already rewarded.'], 400);
-        }
-
-        $claimed = false;
-        DB::transaction(function () use ($task, &$claimed, $user, $userTask) {
-            $userTask->pivot->is_rewarded = true;
-            $userTask->pivot->save();
-
-            $user->increment('balance', $task->reward_coins);
-
-            $claimed = true;
-        });
-
-        if (!$claimed) {
-            return response()->json(['success' => false, 'message' => 'Unable to claim reward.'], 400);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => "You have successfully claimed $task->reward_coins from $task->name."
-        ]);
-    }
+ 
 }
