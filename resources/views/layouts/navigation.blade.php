@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                      <img src="/storage/images/missions/logo.png" alt="bonzee" style = "width : 40px ; height : auto;"> 
                     </a>
                 </div>
 
@@ -21,9 +21,13 @@
                     <x-nav-link :href="route('daily_tasks')" :active="request()->routeIs('daily_tasks')">
                         {{ __('Daily Tasks') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('missions')" :active="request()->routeIs('missions')">
+                        {{ __('Offical') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('users')" :active="request()->routeIs('users')">
                         {{ __('Users') }}
                     </x-nav-link>
+                    
                 </div>
             </div>
 

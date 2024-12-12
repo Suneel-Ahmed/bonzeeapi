@@ -14,4 +14,10 @@ class MissionLevel extends Model
     {
         return $this->belongsTo(Mission::class);
     }
+
+     // Relationship with TelegramUserMission
+     public function telegramUserMissions()
+     {
+         return $this->hasMany(TelegramUserMission::class, 'mission_level_id');
+     }
 }

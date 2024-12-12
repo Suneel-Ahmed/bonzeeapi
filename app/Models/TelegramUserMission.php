@@ -10,4 +10,12 @@ class TelegramUserMission extends Model
     use HasFactory;
 
     protected $guarded = [];
+
+    protected $fillable = ['user_id', 'mission_level_id'];
+
+    // Relationship with MissionLevel
+    public function missionLevel()
+    {
+        return $this->belongsTo(MissionLevel::class);
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TelegramUser;
 use App\Models\Task;
 use App\Models\DailyTask;
+use App\Models\Mission;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -21,6 +22,100 @@ class AdminController extends Controller
     {
         $users = TelegramUser::all();
         return view('users', compact('users'));
+    }
+    public function missions()
+    {
+        $mission = Mission::all();
+        return view('missions', compact('mission'));
+    }
+
+    public function createMissions()
+    {
+        return view('create_mission');
+    }
+
+
+ // Store Offical 
+
+
+    public function storeMissions(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'link' => 'required|string',
+            'code' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('storage/images/missions'), $imageName); // Save to storage/app/public/images/missions
+
+            // Add the image path to the validated data
+            $validated['image'] = '/images/missions/' . $imageName;
+        }
+
+        // Save data to the database
+        Mission::create($validated);
+
+        return redirect()->route('missions')->with('success', 'Official task created successfully');
+    }
+
+
+
+// Delete Offical 
+
+public function deleteMission($id)
+{
+    $mission = Mission::findOrFail($id);
+
+    // Manually delete related records
+    foreach ($mission->levels as $level) {
+        // Delete related TelegramUserMissions
+        $level->telegramUserMissions()->delete();
+    }
+
+    // Delete all MissionLevels
+    $mission->levels()->delete();
+
+    // Delete the Mission
+    $mission->delete();
+
+    return redirect()->route('missions')->with('success', 'Mission deleted successfully');
+}
+
+
+// Update Mission 
+
+public function updateMission(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'link' => 'required|string',
+            'code' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
+        ]);
+
+        $mission = Mission::findOrFail($id);
+
+        if ($request->hasFile('image')) {
+            // Delete the old image if it exists
+            if ($mission->image && file_exists(public_path($mission->image))) {
+                unlink(public_path($mission->image));
+            }
+
+            $image = $request->file('image');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('images/missions'), $imageName);
+
+            $validated['image'] = 'images/missions/' . $imageName;
+        }
+
+        $mission->update($validated);
+
+        return redirect()->route('missions')->with('success', 'Mission updated successfully');
     }
 
     public function tasks()

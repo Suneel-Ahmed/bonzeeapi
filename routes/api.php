@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClickerController;
 use App\Http\Controllers\LevelController;
-use App\Http\Controllers\PartnersController;
+use App\Http\Controllers\Offical_Partners;
 use App\Http\Controllers\PopupController;
 use App\Http\Controllers\ReferralTaskController;
 use App\Http\Controllers\TelegramUserController;
@@ -40,8 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
         
         
         // offical partners
-        Route::post('/partners', [PartnersController::class, 'create']);
-        Route::get('/partners', [PartnersController::class, 'get']);
+        Route::apiResource('/partners', Offical_Partners::class);
 
 
         // Daily tasks

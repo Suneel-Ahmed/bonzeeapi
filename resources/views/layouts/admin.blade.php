@@ -22,6 +22,7 @@
                         <x-nav-link :href="route('users')" :active="request()->routeIs('users')">
                             {{ __('Users') }}
                         </x-nav-link>
+                        
                     </nav>
 
                     @yield('content')
