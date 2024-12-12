@@ -86,8 +86,16 @@ public function deleteMission($id)
     return redirect()->route('missions')->with('success', 'Mission deleted successfully');
 }
 
+// View Update Mission
+public function viewUpdateMission($id)
+{
+    $mission = Mission::findOrFail($id);
+
+    return view('update_mission' , compact('mission'));
+}
 
 // Update Mission 
+
 
 public function updateMission(Request $request, $id)
     {
@@ -102,20 +110,30 @@ public function updateMission(Request $request, $id)
 
         if ($request->hasFile('image')) {
             // Delete the old image if it exists
-            if ($mission->image && file_exists(public_path($mission->image))) {
-                unlink(public_path($mission->image));
+            if ($mission->image && file_exists(public_path('storage' . $mission->image))) {
+                unlink(public_path('storage' . $mission->image));
             }
-
+        
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('images/missions'), $imageName);
-
-            $validated['image'] = 'images/missions/' . $imageName;
+            $image->move(public_path('storage/images/missions'), $imageName);
+        
+            $validated['image'] = '/images/missions/' . $imageName;
         }
+        
 
         $mission->update($validated);
 
         return redirect()->route('missions')->with('success', 'Mission updated successfully');
+    }
+
+
+    // View Daily Tasks
+
+    public function dailyTasks()
+    {
+        $dailyTasks = DailyTask::all();
+        return view('daily_tasks', compact('dailyTasks'));
     }
 
     public function tasks()
@@ -133,7 +151,9 @@ public function updateMission(Request $request, $id)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'action_name' => 'required|string|max:255',
             'description' => 'required|string',
+            'link' => 'required|string',
             'reward_coins' => 'required|integer|min:1',
         ]);
 
@@ -142,17 +162,15 @@ public function updateMission(Request $request, $id)
         return redirect()->route('tasks')->with('success', 'Task created successfully');
     }
 
-    public function dailyTasks()
-    {
-        $dailyTasks = DailyTask::all();
-        return view('daily_tasks', compact('dailyTasks'));
-    }
+   
 
     public function createDailyTask()
     {
         return view('create_daily_task');
     }
 
+
+    // STORE DAILY TASKS
     public function storeDailyTask(Request $request)
     {
         $validated = $request->validate([
@@ -166,6 +184,51 @@ public function updateMission(Request $request, $id)
 
         return redirect()->route('daily_tasks')->with('success', 'Daily task created successfully');
     }
+
+
+
+    // DELETE DAILY TASKS
+    public function deleteDailyTasks($id)
+{
+    $dailyTask = DailyTask::findOrFail($id);
+
+    // Perform deletion
+    $dailyTask->delete();
+
+    return redirect()->route('daily_tasks')->with('success', 'Daily task deleted successfully');
+}
+
+
+
+// UPDATE VIEW DAILY TASKS 
+
+public function viewUpdateDailyTask($id)
+{
+    $dailyTask = DailyTask::findOrFail($id);
+
+    return view('update_daily_task' , compact('dailyTask'));
+}
+
+
+
+public function updateDailyTask(Request $request, $id)
+{
+    // Find the existing daily task
+    $dailyTask = DailyTask::findOrFail($id);
+
+    // Validate the updated data
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'required_login_streak' => 'required|integer|min:1|max:10',
+        'reward_coins' => 'required|integer|min:1',
+    ]);
+
+    // Update the daily task with the validated data
+    $dailyTask->update($validated);
+
+    return redirect()->route('daily_tasks')->with('success', 'Daily task updated successfully');
+}
 
     public function editTask(Task $task)
     {
@@ -197,19 +260,7 @@ public function updateMission(Request $request, $id)
         return view('daily_tasks.edit', compact('dailyTask'));
     }
 
-    public function updateDailyTask(Request $request, DailyTask $dailyTask)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'required_login_streak' => 'required|integer|min:1|max:10',
-            'reward_coins' => 'required|integer|min:1',
-        ]);
-
-        $dailyTask->update($validated);
-
-        return redirect()->route('daily_tasks')->with('success', 'Daily task updated successfully');
-    }
+   
 
     public function deleteDailyTask(DailyTask $dailyTask)
     {

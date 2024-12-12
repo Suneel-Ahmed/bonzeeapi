@@ -19,6 +19,7 @@
                                 <th>Description</th>
                                 <th>Required Login Streak</th>
                                 <th>Reward Coins</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -29,6 +30,20 @@
                                 <td>{{ $task->description }}</td>
                                 <td>{{ $task->required_login_streak }}</td>
                                 <td>{{ $task->reward_coins }}</td>
+                                <td class="px-5 flex justify-center py-3 ">
+                    <form action="{{ route('view_update_daily_task', $task->id) }}" method="GET" class="inline mx-5">
+                        <button type="submit" class="text-blue-500 hover:text-blue-700">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </form>
+                    <form action="{{ route('delete_daily_tasks', $task->id) }}"  method="POST" class="inline mx-5" onsubmit="return confirm('Are you sure you want to delete this mission?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
                             </tr>
                             @endforeach
                         </tbody>

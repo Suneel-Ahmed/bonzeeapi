@@ -31,7 +31,7 @@
                                     <td class ="px-5" >{{ $mission->code }}</td>
                                     <td class ="px-5" > <img src="{{ $mission->image }}" alt="image" style = "width : 30px; height : auto"> </td>
                                     <td class ="px-5 flex justify-between" > 
-                                    <form action="{{ route('update_mission', $mission->id) }}" method="GET" class="inline">
+                                    <form action="{{ route('view_update_mission', $mission->id) }}" method="GET" class="inline">
                         <button type="submit" class="text-blue-500 hover:text-blue-700">
                             <i class="fas fa-edit"></i> 
                         </button>
