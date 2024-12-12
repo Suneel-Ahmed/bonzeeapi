@@ -38,7 +38,7 @@
                             <i class="fas fa-edit"></i>
                         </button>
                     </form>
-                    <form action="{{ route('delete_daily_tasks', $task->id) }}"  method="POST" class="inline mx-5" onsubmit="return confirm('Are you sure you want to delete this mission?');">
+                    <form action="{{ route('delete_task', $task->id) }}"  method="POST" class="inline mx-5" onsubmit="return confirm('Are you sure you want to delete this mission?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="text-red-500 hover:text-red-700">

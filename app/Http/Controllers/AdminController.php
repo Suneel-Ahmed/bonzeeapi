@@ -136,17 +136,21 @@ public function updateMission(Request $request, $id)
         return view('daily_tasks', compact('dailyTasks'));
     }
 
+
+    // View Tasks
     public function tasks()
     {
         $tasks = Task::all();
         return view('tasks', compact('tasks'));
     }
 
+     // Create Page Tasks
     public function createTask()
     {
         return view('create_task');
     }
 
+    // Create Tasks
     public function storeTask(Request $request)
     {
         $validated = $request->validate([
@@ -162,8 +166,25 @@ public function updateMission(Request $request, $id)
         return redirect()->route('tasks')->with('success', 'Task created successfully');
     }
 
-   
 
+    // Delete DAILY TASKS
+
+    public function deleteTask($id)
+    {
+        // Find the task by ID
+        $task = Task::findOrFail($id);
+    
+        // Delete the task
+        $task->delete();
+    
+        // Redirect with success message
+        return redirect()->route('tasks')->with('success', 'Task deleted successfully');
+    }
+
+
+
+
+   // Create Daily Tasks
     public function createDailyTask()
     {
         return view('create_daily_task');
@@ -211,6 +232,8 @@ public function viewUpdateDailyTask($id)
 
 
 
+
+
 public function updateDailyTask(Request $request, $id)
 {
     // Find the existing daily task
@@ -249,11 +272,7 @@ public function updateDailyTask(Request $request, $id)
         return redirect()->route('tasks')->with('success', 'Task updated successfully');
     }
 
-    public function deleteTask(Task $task)
-    {
-        $task->delete();
-        return redirect()->route('tasks')->with('success', 'Task deleted successfully');
-    }
+   
 
     public function editDailyTask(DailyTask $dailyTask)
     {

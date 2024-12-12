@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/tasks', [AdminController::class, 'tasks'])->name('tasks');
     Route::get('/tasks/create', [AdminController::class, 'createTask'])->name('create_task');
     Route::post('/tasks', [AdminController::class, 'storeTask'])->name('store_task');
+    Route::delete('/tasks/delete/{id}', [AdminController::class, 'deleteTask'])->name('delete_task');
     
     // Daily Tasks
     Route::get('/daily-tasks', [AdminController::class, 'dailyTasks'])->name('daily_tasks');
