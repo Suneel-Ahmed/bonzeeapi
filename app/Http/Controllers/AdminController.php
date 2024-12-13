@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TelegramUser;
 use App\Models\Task;
 use App\Models\DailyTask;
+use App\Models\Offical_partnersModel;
 use App\Models\Mission;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,8 @@ class AdminController extends Controller
         $userCount = TelegramUser::count();
         $taskCount = Task::count();
         $dailyTaskCount = DailyTask::count();
-        return view('dashboard', compact('userCount', 'taskCount', 'dailyTaskCount'));
+        $mission = Mission::count();
+        return view('dashboard', compact('userCount', 'taskCount', 'dailyTaskCount' , 'mission'));
     }
 
     public function users()
@@ -32,6 +34,63 @@ class AdminController extends Controller
     public function createMissions()
     {
         return view('create_mission');
+    }
+
+
+    // View ALL Data Offical Partners 
+    // officalPartners
+    public function officalPartners()
+    {
+        
+        $offical = Offical_partnersModel::all();
+        return view('officalPartners', compact('offical'));
+    }
+
+    // Create Page view 
+    public function createViewOfficalPartners()
+    {
+        return view('create_offical_partner');
+    }
+
+
+    // Store Offical Partner
+
+    public function storeOfficalPartner(Request $request)
+    {
+        $validated = $request->validate([
+            'partner_name' => 'required|string|max:255',
+            'partner_img' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+    
+        // Handle image upload
+        if ($request->hasFile('partner_img')) {
+            $image = $request->file('partner_img');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('images/offical'), $imageName); // Save to public/images/offical
+    
+            // Add the image path to the validated data
+            $validated['partner_img'] = 'images/offical/' . $imageName;
+        }
+    
+        // Save data to the database
+        Offical_partnersModel::create($validated);
+    
+        return redirect()->route('offical_partners')->with('success', 'Official Partner created successfully');
+    }
+    
+
+    // Delete Offical Partner
+
+ public function deleteOfficalPartner($id)
+    {
+        // Find the task by ID
+        $task = Offical_partnersModel::findOrFail($id);
+    
+        // Delete the task
+        $task->delete();
+    
+        // Redirect with success message
+        return redirect()->route('offical_partners')->with('success', 'Offical Partner deleted successfully');
     }
 
 
@@ -184,6 +243,40 @@ public function updateMission(Request $request, $id)
 
 
 
+    // Update View Tasks :
+
+    public function updateViewTask($id)
+    {
+        $task = Task::findOrFail($id);
+    
+        return view('update_task' , compact('task'));
+    }
+
+
+
+    // Update Tasks 
+    public function updateTask(Request $request, $id)
+    {
+        // Validate the incoming request
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'action_name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'link' => 'required|string',
+            'reward_coins' => 'required|integer|min:1',
+        ]);
+    
+        // Find the task by ID
+        $task = Task::findOrFail($id);
+    
+        // Update the task with validated data
+        $task->update($validated);
+    
+        // Redirect with success message
+        return redirect()->route('tasks')->with('success', 'Task updated successfully');
+    }
+    
+
    // Create Daily Tasks
     public function createDailyTask()
     {
@@ -258,19 +351,6 @@ public function updateDailyTask(Request $request, $id)
         return view('tasks.edit', compact('task'));
     }
 
-    public function updateTask(Request $request, Task $task)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'required_taps' => 'required|integer|min:0',
-            'reward_coins' => 'required|integer|min:1',
-        ]);
-
-        $task->update($validated);
-
-        return redirect()->route('tasks')->with('success', 'Task updated successfully');
-    }
 
    
 

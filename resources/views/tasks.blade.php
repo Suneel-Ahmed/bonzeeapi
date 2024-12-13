@@ -33,7 +33,7 @@
                                 <td>{{ $task->link }}</td>
                                 <td>{{ $task->reward_coins }}</td>
                                 <td class="px-5 flex justify-center py-3 ">
-                    <form action="{{ route('view_update_daily_task', $task->id) }}" method="GET" class="inline mx-5">
+                    <form action="{{ route('update_view_task', $task->id) }}" method="GET" class="inline mx-5">
                         <button type="submit" class="text-blue-500 hover:text-blue-700">
                             <i class="fas fa-edit"></i>
                         </button>

@@ -24,6 +24,9 @@
                     <x-nav-link :href="route('missions')" :active="request()->routeIs('missions')">
                         {{ __('Offical') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('offical_partners')" :active="request()->routeIs('offical_partners')">
+                        {{ __('Offical Partners') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('users')" :active="request()->routeIs('users')">
                         {{ __('Users') }}
                     </x-nav-link>

@@ -35,8 +35,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/tasks', [AdminController::class, 'tasks'])->name('tasks');
     Route::get('/tasks/create', [AdminController::class, 'createTask'])->name('create_task');
     Route::post('/tasks', [AdminController::class, 'storeTask'])->name('store_task');
+    Route::get('/tasks/update/{id}', [AdminController::class, 'updateViewTask'])->name('update_view_task');
+    Route::post('/tasks/update/{id}', [AdminController::class, 'updateTask'])->name('update_task');
     Route::delete('/tasks/delete/{id}', [AdminController::class, 'deleteTask'])->name('delete_task');
     
+
+
     // Daily Tasks
     Route::get('/daily-tasks', [AdminController::class, 'dailyTasks'])->name('daily_tasks');
     Route::get('/daily-tasks/create', [AdminController::class, 'createDailyTask'])->name('create_daily_task');
@@ -44,6 +48,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/daily-tasks/update/{id}', [AdminController::class, 'updateDailyTask'])->name('update_daily_task');
     Route::delete('/daily-tasks/delete/{id}', [AdminController::class, 'deleteDailyTasks'])->name('delete_daily_tasks');
     Route::post('/daily-tasks', [AdminController::class, 'storeDailyTask'])->name('store_daily_task');
+    
+    
+    // Offical Partners
+    Route::get('/offical_partners', [AdminController::class, 'officalPartners'])->name('offical_partners');
+    Route::get('/offical_partners/create', [AdminController::class, 'createViewOfficalPartners'])->name('create_offical');
+    Route::post('/offical_partners/create', [AdminController::class, 'storeOfficalPartner'])->name('store_offical');
+    Route::delete('/offical_partners/delete/{id}', [AdminController::class, 'deleteOfficalPartner'])->name('delete_offical');
 });
 
 require __DIR__.'/auth.php';
