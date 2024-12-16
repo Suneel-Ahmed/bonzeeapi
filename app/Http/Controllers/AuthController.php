@@ -16,9 +16,12 @@ class AuthController extends Controller
             'last_name' => 'nullable|string',
             'username' => 'nullable|string',
             'referred_by' => 'sometimes|nullable',
+
         ]);
 
-        $validated['balance'] = 5_000;
+        $validated['balance'] = 0;
+        // $validated['last_active_at'] = now();
+        $validated['last_active_at'] = now();
 
         if ($request->get('referred_by') != null && $request->get('referred_by') != $request->get('telegram_id')) {
             $isUserExists = TelegramUser::where('telegram_id', $request->get('telegram_id'))->exists();
@@ -35,10 +38,14 @@ class AuthController extends Controller
             $validated['referred_by'] = null;
         }
 
+
+
         $user = TelegramUser::firstOrCreate(
             ['telegram_id' => $request->get('telegram_id')],
             $validated
         );
+
+        // $user->update(['last_active_at' => now()]);
 
         $user->updateLoginStreak();
 

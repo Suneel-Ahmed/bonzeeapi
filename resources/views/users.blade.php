@@ -16,18 +16,30 @@
                                 <th>ID</th>
                                 <th>Chat ID</th>
                                 <th>Username</th>
+                                <th>Payout</th>
                                 <th>Balance Coins</th>
-                                <th>Login Streak</th>
+                                <th>Active</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
-                                <tr>
+                                <tr class = "text-center">
                                     <td>{{ $user->id }}</td>
                                     <td>{{ $user->telegram_id }}</td>
-                                    <td>{{ $user->username }}</td>
+                                    <td>{{ $user->first_name }}{{ $user->last_name }}</td>
+                                    <td>Verify | Not Verify</td>
                                     <td>{{ $user->balance }}</td>
-                                    <td>{{ $user->login_streak }}</td>
+                                    <td>
+    @if ($user->last_active_at && $user->last_active_at->gt(now()->subMinutes(5)))
+        <span class="text-green-500 font-bold">Online</span>
+    @elseif ($user->last_active_at)
+        <span class="text-gray-500">{{ $user->last_active_at->diffForHumans() }}</span>
+    @else
+        <span class="text-gray-500">Never Active</span>
+    @endif
+</td>
+                                    <td>View</td>
                                 </tr>
                             @endforeach
                         </tbody>

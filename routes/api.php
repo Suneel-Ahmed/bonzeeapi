@@ -10,7 +10,8 @@ use App\Http\Controllers\ReferralTaskController;
 use App\Http\Controllers\TelegramUserController;
 use App\Http\Controllers\UserMissionController;
 use App\Http\Controllers\UserTaskController;
-
+use App\Http\Controllers\PaymentMethodController;
+use App\Http\Middleware\UpdateLastActive;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -29,7 +30,7 @@ Route::post('/auth/telegram-user', [AuthController::class, 'telegramUser']);
 Route::get('/popups', [PopupController::class, 'index']);
 
 // Protected routes
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum', UpdateLastActive::class)->group(function () {
 
     Route::get('referred-users', [TelegramUserController::class, 'referredUsers']);
 
@@ -39,6 +40,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/sync', [ClickerController::class, 'sync']);
         
         
+        Route::get('/payment-methods', [PaymentMethodController::class, 'index']);
+        Route::post('/payment-methods', [PaymentMethodController::class, 'store']);
+        Route::put('/payment-methods/{paymentMethod}', [PaymentMethodController::class, 'update']);
+        Route::delete('/payment-methods/{paymentMethod}', [PaymentMethodController::class, 'destroy']);
+
+
         // offical partners
         Route::apiResource('/partners', Offical_Partners::class);
 

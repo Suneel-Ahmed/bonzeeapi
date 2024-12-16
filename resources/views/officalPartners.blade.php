@@ -33,7 +33,7 @@
                                         </div> 
                                      </td>
                                     <td class ="px-5 flex justify-center gap-4" > 
-                                    <form action="{{ route('view_update_mission', $offical->id) }}" method="GET" class="inline">
+                                    <form action="{{ route('update_view_offical', $offical->id) }}" method="GET" class="inline">
                         <button type="submit" class="text-blue-500 hover:text-blue-700">
                             <i class="fas fa-edit"></i> 
                         </button>

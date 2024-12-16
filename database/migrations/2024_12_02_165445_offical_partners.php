@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('offical_partners' , function (Blueprint $table){
-        $table->id();
-        $table->string('partner_name');
-        $table->string('partner_img');
-        $table->timestamps();
-       });
+        if (!Schema::hasTable('offical_partners')) {
+            Schema::create('offical_partners', function (Blueprint $table) {
+                $table->id();
+                $table->string('partner_name');
+                $table->string('partner_img');
+                $table->timestamps();
+            });
+        }
     }
 
     /**
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('offical_partners');
     }
 };

@@ -23,6 +23,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/users', [AdminController::class, 'users'])->name('users');
     
+    // Payment Methods : 
+   
+
+
+
     // Missions
     Route::get('/missions', [AdminController::class, 'missions'])->name('missions');
     Route::get('/missions/create', [AdminController::class, 'createMissions'])->name('create_mission');
@@ -54,6 +59,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/offical_partners', [AdminController::class, 'officalPartners'])->name('offical_partners');
     Route::get('/offical_partners/create', [AdminController::class, 'createViewOfficalPartners'])->name('create_offical');
     Route::post('/offical_partners/create', [AdminController::class, 'storeOfficalPartner'])->name('store_offical');
+    Route::get('/offical_partners/update/{id}', [AdminController::class, 'updateViewOfficalPartner'])->name('update_view_offical');
+    Route::post('/offical_partners/update/{id}', [AdminController::class, 'updateOfficalPartner'])->name('update_offical');
     Route::delete('/offical_partners/delete/{id}', [AdminController::class, 'deleteOfficalPartner'])->name('delete_offical');
 });
 

@@ -22,6 +22,7 @@ class TelegramUser extends Authenticatable
     protected $casts = [
         'last_login_date' => 'datetime',
         'last_daily_booster_use' => 'datetime',
+        'last_active_at' => 'datetime',
     ];
 
     public function referrals()
@@ -36,6 +37,16 @@ class TelegramUser extends Authenticatable
             ->withTimestamps();
     }
 
+    public function paymentMethods()
+    {
+        return $this->hasMany(PaymentMethod::class, 'user_id', 'id');
+    }
+
+    public function isPaymentVerified()
+    {
+        return $this->paymentMethods()->exists();
+    }
+    
     public function tasks()
     {
         return $this->belongsToMany(Task::class, 'telegram_user_tasks')

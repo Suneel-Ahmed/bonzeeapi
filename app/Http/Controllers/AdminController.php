@@ -25,6 +25,8 @@ class AdminController extends Controller
         $users = TelegramUser::all();
         return view('users', compact('users'));
     }
+
+    
     public function missions()
     {
         $mission = Mission::all();
@@ -94,7 +96,54 @@ class AdminController extends Controller
     }
 
 
- // Store Offical 
+  // View Update Offical Partner 
+public function updateViewOfficalPartner($id)
+{
+    $offical = Offical_partnersModel::findOrFail($id);
+
+    return view('update_offical_partner' , compact('offical'));
+}
+
+    // Update Offical Partner 
+
+    public function updateOfficalPartner(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'partner_name' => 'required|string|max:255',
+            'partner_img' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+    
+        // Find the official partner by ID
+        $partner = Offical_partnersModel::findOrFail($id);
+    
+        // Handle image upload
+        if ($request->hasFile('partner_img')) {
+            // Delete the old image if it exists
+            if ($partner->partner_img && file_exists(public_path($partner->partner_img))) {
+                unlink(public_path($partner->partner_img));
+            }
+    
+            $image = $request->file('partner_img');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('images/offical'), $imageName); // Save to public/images/offical
+    
+            // Update the image path
+            $validated['partner_img'] = 'images/offical/' . $imageName;
+        }
+    
+        // Update partner details
+        $partner->update($validated);
+    
+        return redirect()->route('offical_partners')->with('success', 'Official Partner updated successfully');
+    }
+    
+
+
+
+
+
+
+    // Store Offical 
 
 
     public function storeMissions(Request $request)
