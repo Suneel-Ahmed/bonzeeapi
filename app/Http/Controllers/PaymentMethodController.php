@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
+use App\Models\TelegramUser;
 
 class PaymentMethodController extends Controller
 {
@@ -41,13 +42,18 @@ class PaymentMethodController extends Controller
             'account_holder_name' => $validated['account_holder_name'],
             'account_number' => $validated['account_number'],
         ]);
-    
+        $user = TelegramUser::find($validated['user_id']);
+        if ($user) {
+            $user->update(['payment_verified' => true]);
+        }
         return response()->json([
             'paymentMethod' => $paymentMethod,
             'message' => 'Payment method added successfully.',
         ]);
     }
     
+
+
 
     public function update(Request $request, PaymentMethod $paymentMethod)
     {

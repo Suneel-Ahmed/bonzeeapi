@@ -11,9 +11,11 @@ class Mission extends Model
 
     protected $fillable = [
         'name',
+        'image',
         'link',
         'code',
-        'image', // Ensure 'image' is fillable
+        'code_verify',
+        'user_id', // Ensure 'image' is fillable
     ];
 
     public function getImageAttribute($value)
@@ -21,19 +23,9 @@ class Mission extends Model
         return $value ? env("APP_STORAGE_URL", "/") . '/storage' . $value : null;
     }
 
-    public function levels()
-    {
-        return $this->hasMany(MissionLevel::class);
-    }
 
-    public function nextLevel()
+    public function user()
     {
-        return $this->hasOne(MissionLevel::class)
-            ->orderBy('level');
-    }
-
-    public function type()
-    {
-        return $this->belongsTo(MissionType::class);
+        return $this->belongsTo(TelegramUser::class);
     }
 }

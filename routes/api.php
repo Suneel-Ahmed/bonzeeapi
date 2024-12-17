@@ -10,6 +10,8 @@ use App\Http\Controllers\ReferralTaskController;
 use App\Http\Controllers\TelegramUserController;
 use App\Http\Controllers\UserMissionController;
 use App\Http\Controllers\UserTaskController;
+use App\Http\Controllers\TaskStatusController;
+use App\Http\Controllers\OfficalTaskController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Middleware\UpdateLastActive;
 /*
@@ -39,7 +41,17 @@ Route::middleware('auth:sanctum', UpdateLastActive::class)->group(function () {
         // Sync user data
         Route::get('/sync', [ClickerController::class, 'sync']);
         
+
+        // Offical Tasks
+        Route::post('/offical_tasks/{id}', [UserTaskController::class, 'verifyTask']); // User verifies tasks
         
+
+
+        Route::get('/missions/asdasd', [UserMissionController::class, 'index']);
+        Route::post('/missions', [UserMissionController::class, 'store']);
+        Route::post('/missions/{id}/verify', [UserMissionController::class, 'verifyCode']);
+
+
         Route::get('/payment-methods', [PaymentMethodController::class, 'index']);
         Route::post('/payment-methods', [PaymentMethodController::class, 'store']);
         Route::put('/payment-methods/{paymentMethod}', [PaymentMethodController::class, 'update']);
@@ -72,12 +84,7 @@ Route::middleware('auth:sanctum', UpdateLastActive::class)->group(function () {
         // Set ton wallet
         Route::post('/set-ton-wallet', [ClickerController::class, 'setTonWallet']);
 
-        // Missions
-        Route::get('missions', [UserMissionController::class, 'index']);
-
-        Route::post('mission-levels/{missionLevel}', [UserMissionController::class, 'store']);
-        Route::put('/missions/{id}', [UserMissionController::class, 'update']);
- 
+        
         Route::post('/test', function (Request $request) {
             $request->validate([
                 'hash' => 'required|string',

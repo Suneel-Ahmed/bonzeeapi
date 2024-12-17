@@ -6,7 +6,10 @@ use App\Models\TelegramUser;
 use App\Models\Task;
 use App\Models\DailyTask;
 use App\Models\Offical_partnersModel;
-use App\Models\Mission;
+use App\Models\OfficalTask;
+use App\Models\UserTaskStatus;
+
+
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -16,9 +19,11 @@ class AdminController extends Controller
         $userCount = TelegramUser::count();
         $taskCount = Task::count();
         $dailyTaskCount = DailyTask::count();
-        $mission = Mission::count();
-        return view('dashboard', compact('userCount', 'taskCount', 'dailyTaskCount' , 'mission'));
+        $officalTask = OfficalTask::count();
+        return view('dashboard', compact('userCount', 'taskCount', 'dailyTaskCount' , 'officalTask'));
     }
+
+ 
 
     public function users()
     {
@@ -26,17 +31,41 @@ class AdminController extends Controller
         return view('users', compact('users'));
     }
 
-    
-    public function missions()
+    public function eachUser($user_id)
     {
-        $mission = Mission::all();
-        return view('missions', compact('mission'));
+        // Find the user by ID
+        $user = TelegramUser::findOrFail($user_id);
+    
+        // Return the view with the user data
+        return view('each_user_view', compact('user'));
+    }
+    
+ 
+ 
+    // Get Offical Tasks Status
+    public function getOfficalTaskStatus()
+    {
+        $tasksCount = OfficalTask::count(); // Total number of tasks
+    
+        $status = TelegramUser::all()->map(function ($user) use ($tasksCount) {
+            $completedTasks = UserTaskStatus::where('user_id', $user->id)
+                ->where('is_verified', true)
+                ->count();
+    
+            $remainingTasks = $tasksCount - $completedTasks;
+    
+            return [
+                'user' => $user->first_name,
+                'completed_tasks' => $completedTasks,
+                'remaining_tasks' => $remainingTasks,
+            ];
+        });
+    
+        return response()->json($status);
     }
 
-    public function createMissions()
-    {
-        return view('create_mission');
-    }
+
+
 
 
     // View ALL Data Offical Partners 
@@ -140,72 +169,68 @@ public function updateViewOfficalPartner($id)
 
 
 
-
-
-
-    // Store Offical 
-
-
-    public function storeMissions(Request $request)
+    public function storeOfficalTasks(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string',
             'link' => 'required|string',
             'code' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Handle image upload
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('storage/images/missions'), $imageName); // Save to storage/app/public/images/missions
-
+            $image->move(public_path('images/officalTasks'), $imageName); // Save to public/images/offical
+    
             // Add the image path to the validated data
-            $validated['image'] = '/images/missions/' . $imageName;
+            $validated['image'] = 'images/officalTasks/' . $imageName;
         }
 
-        // Save data to the database
-        Mission::create($validated);
+        $task = OfficalTask::create($validated);
 
-        return redirect()->route('missions')->with('success', 'Official task created successfully');
+        return redirect()->route('offical_tasks')->with('success', 'Official task created successfully');
+
+       
+
     }
 
 
+  
 
-// Delete Offical 
 
-public function deleteMission($id)
+
+// Delete Offical Tasks 
+
+public function deleteOfficalTasks($id)
 {
-    $mission = Mission::findOrFail($id);
-
-    // Manually delete related records
-    foreach ($mission->levels as $level) {
-        // Delete related TelegramUserMissions
-        $level->telegramUserMissions()->delete();
+    $mission = OfficalTask::findOrFail($id);
+    if ($mission) {
+        $mission->delete();
+        return redirect()->route('offical_tasks')->with('success', 'Task deleted successfully.');
     }
 
-    // Delete all MissionLevels
-    $mission->levels()->delete();
-
-    // Delete the Mission
-    $mission->delete();
-
-    return redirect()->route('missions')->with('success', 'Mission deleted successfully');
+    return redirect()->route('offical_tasks')->with('error', 'Task not found.');
 }
 
-// View Update Mission
-public function viewUpdateMission($id)
+public function viewCreateOfficalTasks()
 {
-    $mission = Mission::findOrFail($id);
+    return view('create_mission');
+}
+
+
+
+public function viewOfficalTasks($id)
+{
+    $mission = OfficalTask::findOrFail($id);
 
     return view('update_mission' , compact('mission'));
 }
 
-// Update Mission 
+// Update OfficalTasks 
 
 
-public function updateMission(Request $request, $id)
+public function updateOfficalTasks(Request $request, $id)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -214,25 +239,32 @@ public function updateMission(Request $request, $id)
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif',
         ]);
 
-        $mission = Mission::findOrFail($id);
+        $offical = OfficalTask::findOrFail($id);
 
-        if ($request->hasFile('image')) {
-            // Delete the old image if it exists
-            if ($mission->image && file_exists(public_path('storage' . $mission->image))) {
-                unlink(public_path('storage' . $mission->image));
-            }
-        
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('storage/images/missions'), $imageName);
-        
-            $validated['image'] = '/images/missions/' . $imageName;
+
+    if (!$offical) {
+        return redirect()->route('offical_tasks')->with('error', 'Task not found.');
+    }
+
+      if ($request->hasFile('image')) {
+        // Delete the old image if it exists
+        if ($offical->image && file_exists(public_path($offical->image))) {
+            unlink(public_path($offical->image));
         }
+
+        // Upload the new image
+        $image = $request->file('image');
+        $imageName = time() . '_' . $image->getClientOriginalName();
+        $image->move(public_path('images/officalTasks'), $imageName);
+
+        // Update the image path in validated data
+        $validated['image'] = 'images/officalTasks/' . $imageName;
+    }
         
 
-        $mission->update($validated);
+        $offical->update($validated);
 
-        return redirect()->route('missions')->with('success', 'Mission updated successfully');
+        return redirect()->route('offical_tasks')->with('success', ' Offical Tasks updated successfully');
     }
 
 

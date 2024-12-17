@@ -10,10 +10,10 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <h1 class="text-2xl font-bold mb-4">Offical List</h1>
-                    <a href="{{ route('create_mission') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">Create New Offical</a>
+                    <a href="{{ route('view_create_offical_tasks') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">Create New Offical</a>
                     <table class=" table-auto w-full ">
                         <thead>
-                            <tr class = "text-left " >
+                            <tr class = "text-center " >
                                 <th class ="px-5" >ID</th>
                                 <th class ="px-5" >Name</th>
                                 <th class ="px-5" >link</th>
@@ -23,28 +23,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($mission as $mission)
+                            @foreach ($offical as $offical)
                                 <tr class ="text-left " >
-                                    <td class ="px-5" >{{ $mission->id }}</td>
-                                    <td class ="px-5" >{{ $mission->name }}</td>
-                                    <td class ="px-5" >{{ $mission->link }}</td>
-                                    <td class ="px-5" >{{ $mission->code }}</td>
-                                    <td class ="px-5" > <img src="{{ $mission->image }}" alt="image" style = "width : 30px; height : auto"> </td>
-                                    <td class ="px-5 flex justify-between" > 
-                                    <form action="{{ route('view_update_mission', $mission->id) }}" method="GET" class="inline">
+                                    <td class ="px-5" >{{ $offical->id }}</td>
+                                    <td class ="px-5" >{{ $offical->name }}</td>
+                                    <td class ="px-5" >{{ $offical->link }}</td>
+                                    <td class ="px-5" >{{ $offical->code }}</td>
+                                    <td class ="px-5" >
+                                    <div style= "width : 100%; display: flex ; justify-content: center;" >
+
+                                        <img src="{{ $offical->image }}" alt="image" style = "width : 30px; height : auto">
+                                    </div>    
+                                        </td>
+                                    <td class="px-5 flex justify-center py-3 ">
+                    <form  action="{{ route('view_offical_tasks', $offical->id) }}" method="GET" class="inline mx-5">
                         <button type="submit" class="text-blue-500 hover:text-blue-700">
-                            <i class="fas fa-edit"></i> 
+                            <i class="fas fa-edit"></i>
                         </button>
                     </form>
-                    <form action="{{ route('delete_mission', $mission->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this mission?');">
+                    <form  action="{{ route('delete_offical_tasks', $offical->id) }}"   method="POST" class="inline mx-5" onsubmit="return confirm('Are you sure you want to delete this mission?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="text-red-500 hover:text-red-700">
-                            <i class="fas fa-trash"></i> 
+                            <i class="fas fa-trash"></i>
                         </button>
                     </form>
-
-                                </td>        
+                </td>
                                 </tr>
                             @endforeach
                         </tbody>

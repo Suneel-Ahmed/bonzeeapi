@@ -28,18 +28,25 @@
                                     <td>{{ $user->id }}</td>
                                     <td>{{ $user->telegram_id }}</td>
                                     <td>{{ $user->first_name }}{{ $user->last_name }}</td>
-                                    <td>Verify | Not Verify</td>
+                                    <td>
+    @if ($user->payment_verified)
+  <span style = "color : rgb(4, 209, 8);" class = " font-bold" >Verified </span>
+    @else
+    <span style = "color : rgb(240, 43, 22);" class = " font-bold" >  Not Verified</span>
+
+    @endif
+</td>
                                     <td>{{ $user->balance }}</td>
                                     <td>
     @if ($user->last_active_at && $user->last_active_at->gt(now()->subMinutes(5)))
-        <span class="text-green-500 font-bold">Online</span>
+        <span style = "color : rgb(4, 209, 8);" class="text-green-800 font-bold">Online</span>
     @elseif ($user->last_active_at)
         <span class="text-gray-500">{{ $user->last_active_at->diffForHumans() }}</span>
     @else
-        <span class="text-gray-500">Never Active</span>
+        <span style = "color : rgb(240, 43, 22);" class="text-gray-500">Never Active</span>
     @endif
 </td>
-                                    <td>View</td>
+                                    <td> <a href="{{ route('each_user_view', $user->id) }}"><i class="fas fa-eye"></i></a></td>
                                 </tr>
                             @endforeach
                         </tbody>

@@ -2,57 +2,54 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
-use Carbon\Carbon;
+use App\Models\OfficalTask;
+use App\Models\UserTaskStatus;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class UserTaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+
+    public function verifyTask(Request $request, $id)
     {
+        // Validate the code
+        $validated = $request->validate([
+            'code' => 'required|string',
+        ]);
+
+        // Find the task
+        $task = OfficalTask::findOrFail($id);
+
+        // Check if the user exists (assuming user is authenticated)
         $user = $request->user();
 
-        $tasks = Task::query()
-            ->leftJoin('telegram_user_tasks', function ($join) use ($user) {
-                $join->on('tasks.id', '=', 'telegram_user_tasks.task_id')
-                    ->where('telegram_user_tasks.telegram_user_id', $user->id);
-            })
-            ->select(['tasks.*', 'telegram_user_tasks.is_submitted', 'telegram_user_tasks.is_rewarded', 'telegram_user_tasks.submitted_at'])
-            ->get()
-            ->map(function ($task) {
-                return array_merge($task->toArray(), [
-                    // submitted_at with iso format
-                    'submitted_at' => $task->submitted_at ? Carbon::parse($task->submitted_at)->toIso8601String() : null,
-                ]);
-            });
-
-        return response()->json($tasks);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request, Task $task)
-    {
-        $user = $request->user();
-
-        $userTask = $user->tasks()->where('task_id', $task->id)->first();
-
-        if ($userTask) {
-            return response()->json(['success' => false, 'message' => 'Task already submitted.'], 400);
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not found.',
+            ], 404);
         }
 
-        $user->tasks()->attach($task->id, ['is_submitted' => true, 'submitted_at' => now()]);
+        // Verify the task code
+        if ($task->code === $validated['code']) {
+            // Create or update the user-task status
+            $status = UserTaskStatus::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'task_id' => $task->id,
+                ],
+                ['is_verified' => true] // Set the verification status to true
+            );
+
+            return response()->json([
+                'message' => 'Code verified successfully.',
+                'task' => $task,
+                'status' => $status,
+            ]);
+        }
 
         return response()->json([
-            'success' => true,
-            'message' => 'Task submitted successfully. Waiting for approval.',
-        ]);
+            'message' => 'Invalid code.',
+        ], 400);
     }
 
- 
+
 }

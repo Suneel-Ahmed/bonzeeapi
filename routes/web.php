@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\OfficalTaskController;
+use App\Http\Controllers\TaskStatusController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,17 +27,21 @@ Route::middleware('auth')->group(function () {
     
     // Payment Methods : 
    
+    // User 
+    Route::get('/user/{user_id}', [AdminController::class, 'eachUser'])->name('each_user_view');
+
+
+    Route::get('/offical_tasks', [OfficalTaskController::class, 'index'])->name('offical_tasks'); // Admin creates tasks
+    Route::get('/offical_tasks/create', [AdminController::class, 'viewCreateOfficalTasks'])->name('view_create_offical_tasks'); // Admin creates tasks
+    Route::post('/offical_tasks', [AdminController::class, 'storeOfficalTasks'])->name('store_offical_tasks'); // Admin creates tasks
+    Route::get('/offical_tasks/status', [AdminController::class, 'getOfficalTaskStatus']); // Admin gets task statuses
+    Route::delete('/offical_tasks/delete/{id}', [AdminController::class, 'deleteOfficalTasks'])->name('delete_offical_tasks');; // Admin gets task statuses
+    Route::get('/offical_tasks/update/{id}', [AdminController::class, 'viewOfficalTasks'])->name('view_offical_tasks');
+    Route::post('/offical_tasks/update/{id}', [AdminController::class, 'updateOfficalTasks'])->name('update_offical_tasks');
 
 
 
-    // Missions
-    Route::get('/missions', [AdminController::class, 'missions'])->name('missions');
-    Route::get('/missions/create', [AdminController::class, 'createMissions'])->name('create_mission');
-    Route::post('/missions', [AdminController::class, 'storeMissions'])->name('store_mission');
-    Route::get('/missions/update/{id}', [AdminController::class, 'viewUpdateMission'])->name('view_update_mission');
-    Route::post('/missions/update/{id}', [AdminController::class, 'updateMission'])->name('update_mission');
-    Route::delete('/missions/delete/{id}', [AdminController::class, 'deleteMission'])->name('delete_mission');
-    
+
     // Tasks
     Route::get('/tasks', [AdminController::class, 'tasks'])->name('tasks');
     Route::get('/tasks/create', [AdminController::class, 'createTask'])->name('create_task');

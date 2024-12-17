@@ -19,7 +19,7 @@
         </div>
         <div class="bg-white shadow-md rounded p-4">
             <h2 class="text-lg font-bold">Total Offical Tasks</h2>
-            <p class="text-2xl">{{ $mission }}</p>
+            <p class="text-2xl">{{ $officalTask }}</p>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
             labels: ['Users', 'Tasks', 'Daily Tasks' , 'Offical Tasks'], // Labels for each category
             datasets: [{
                 label: 'Overview',
-                data: [{{ $userCount }}, {{ $taskCount }}, {{ $dailyTaskCount }} , {{$mission}} ], // Data values
+                data: [{{ $userCount }}, {{ $taskCount }}, {{ $dailyTaskCount }} , {{$officalTask}} ], // Data values
                 backgroundColor: [
                     'rgba(54, 162, 235, 0.6)', // Blue
                     'rgba(236, 66, 245, 0.6)', // Yellow

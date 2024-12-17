@@ -10,7 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <h1 class="text-2xl font-bold mb-4">Update Offical</h1>
-                    <form action="{{ route('update_mission', $mission->id) }}" method="POST" enctype="multipart/form-data" >
+                    <form action="{{ route('update_offical_tasks', $mission->id) }}" method="POST" enctype="multipart/form-data" >
                         @csrf
                         <div class="mb-4">
                             <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name:</label>

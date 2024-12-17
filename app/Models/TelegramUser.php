@@ -36,6 +36,24 @@ class TelegramUser extends Authenticatable
             ->withPivot('completed', 'created_at')
             ->withTimestamps();
     }
+    public function tasks()
+    {
+        return $this->belongsToMany(OfficalTask::class, 'user_task_statuses', 'user_id', 'task_id')
+            ->withPivot('is_verified')  // Make sure 'is_verified' is included in the pivot
+            ->withTimestamps();
+    }
+
+
+    // OfficalTasks
+    public function officalTasks()
+{
+    return $this->hasMany(OfficalTask::class, 'user_id', 'id');
+}
+
+    public function completedMissions()
+    {
+        return $this->hasMany(TelegramUserMission::class, 'telegram_user_id');
+    }
 
     public function paymentMethods()
     {
@@ -47,12 +65,7 @@ class TelegramUser extends Authenticatable
         return $this->paymentMethods()->exists();
     }
     
-    public function tasks()
-    {
-        return $this->belongsToMany(Task::class, 'telegram_user_tasks')
-            ->withPivot('is_submitted', 'is_rewarded', 'submitted_at')
-            ->withTimestamps();
-    }
+   
 
     public function referralTasks()
     {
@@ -102,19 +115,7 @@ class TelegramUser extends Authenticatable
         return $passiveEarnings;
     }
 
-    public function tap($count = 1)
-    {
-        $taps = min($count, $this->available_energy);
-        $multiplier = $this->getActiveBoosterMultiplier();
-        $earned = $taps * $this->earn_per_tap * $multiplier;
-
-        $this->balance += $earned;
-        $this->available_energy -= $taps;
-        $this->last_tap_date = now();
-        $this->save();
-
-        return $earned;
-    }
+  
 
     private function getActiveBoosterMultiplier()
     {

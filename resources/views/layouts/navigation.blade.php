@@ -21,7 +21,7 @@
                     <x-nav-link :href="route('daily_tasks')" :active="request()->routeIs('daily_tasks')">
                         {{ __('Daily Tasks') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('missions')" :active="request()->routeIs('missions')">
+                    <x-nav-link :href="route('offical_tasks')" :active="request()->routeIs('offical_tasks')">
                         {{ __('Offical') }}
                     </x-nav-link>
                     <x-nav-link :href="route('offical_partners')" :active="request()->routeIs('offical_partners')">
