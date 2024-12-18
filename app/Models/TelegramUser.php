@@ -25,10 +25,7 @@ class TelegramUser extends Authenticatable
         'last_active_at' => 'datetime',
     ];
 
-    public function referrals()
-    {
-        return $this->hasMany(self::class, 'referred_by', 'telegram_id');
-    }
+ 
 
     public function dailyTasks()
     {
@@ -66,12 +63,22 @@ class TelegramUser extends Authenticatable
     }
     
    
-
+  /**
+     * The referral tasks that the user has completed.
+     */
     public function referralTasks()
     {
         return $this->belongsToMany(ReferralTask::class, 'telegram_user_referral_task')
             ->withPivot('is_completed')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the referrals for the user (assuming you have a referrals relationship).
+     */
+    public function referrals()
+    {
+        return $this->hasMany(TelegramUser::class, 'referred_by_user_id');
     }
 
     public function level()

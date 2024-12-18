@@ -7,7 +7,9 @@ use App\Models\Task;
 use App\Models\DailyTask;
 use App\Models\Offical_partnersModel;
 use App\Models\OfficalTask;
+use App\Models\TelegramUserTask;
 use App\Models\UserTaskStatus;
+use App\Models\TelegramUserDailyTask;
 
 
 use Illuminate\Http\Request;
@@ -35,13 +37,58 @@ class AdminController extends Controller
     {
         // Find the user by ID
         $user = TelegramUser::findOrFail($user_id);
-    
+        $tasksCount = OfficalTask::count();
+        $allTasksCount = Task::count();
+        $dailyTasks = DailyTask::count();
+        $completedTasks = UserTaskStatus::where('user_id', $user_id)->count();
         // Return the view with the user data
-        return view('each_user_view', compact('user'));
+        $remainingTasks = $tasksCount - $completedTasks;
+       
+        $tasksStatus = [
+            'all_tasks' => $tasksCount,
+            'remaining_tasks' => $remainingTasks,
+            'completed_tasks' => $completedTasks,
+        ];
+        $submittedTasksCount = TelegramUserTask::where('telegram_user_id', $user_id)
+        ->where('is_submitted', true)
+        ->count();
+
+
+        $completedDailyTasks = TelegramUserDailyTask::where('telegram_user_id', $user_id)
+        ->where('completed', true)
+        ->count();
+
+
+        $remainingDailyTasks = $dailyTasks - $completedDailyTasks;
+        $remainTasks = $allTasksCount - $submittedTasksCount;
+        
+        
+        $earnTasks = [
+            'all_tasks' => $allTasksCount,
+            'completed_tasks' => $submittedTasksCount,
+            'remaining_tasks' => $remainTasks,
+        ];
+
+
+
+        $dailytasksStatus = [
+            'all_tasks' => $dailyTasks,
+            'remaining_tasks' => $remainingDailyTasks,
+            'completed_tasks' => $completedDailyTasks,
+        ];
+
+        return view('each_user_view', compact('user' , 'tasksStatus' , 'earnTasks' , 'dailytasksStatus'));
     }
     
  
  
+    // Get All Offical Tasks
+    public function getAllOfficalTask() {
+            $officalTask = OfficalTask::all();
+            return view('officalTasks', compact('officalTask'));
+        }
+    
+
     // Get Offical Tasks Status
     public function getOfficalTaskStatus()
     {

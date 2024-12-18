@@ -4,11 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\OfficalTask;
 use App\Models\UserTaskStatus;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
 class UserTaskController extends Controller
 {
 
+    public function index()
+    {
+        // Retrieve all tasks from the Task model
+        $tasks = Task::all();
+    
+        // Return the data as JSON
+        return response()->json([
+            'success' => true,
+            'data' => $tasks,
+        ], 200);
+    }
     public function verifyTask(Request $request, $id)
     {
         // Validate the code

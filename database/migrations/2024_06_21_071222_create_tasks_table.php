@@ -14,9 +14,10 @@ class CreateTasksTable extends Migration
             $table->string('name');
             $table->text('description');
             $table->integer('reward_coins');
-            $table->enum('type', ['video', 'other']);
+            $table->enum('type', ['video', 'other', 'code']);
             $table->string('action_name');
             $table->string('link');
+            $table->string('code')->nullable();
             $table->timestamps();
         });
 

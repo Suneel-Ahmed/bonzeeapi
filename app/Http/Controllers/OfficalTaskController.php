@@ -13,6 +13,14 @@ class OfficalTaskController extends Controller
         $offical = OfficalTask::all();
         return view('officalTasks', compact('offical'));
     }
+    public function getDataClient(Request $request)
+    {
+
+        $offical = OfficalTask::all();
+        return response()->json([
+            'missions' => $offical,
+        ]);
+    }
 
     //
    

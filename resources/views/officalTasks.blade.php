@@ -23,25 +23,25 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($offical as $offical)
+                            @foreach ($officalTask as $officalTask)
                                 <tr class ="text-left " >
-                                    <td class ="px-5" >{{ $offical->id }}</td>
-                                    <td class ="px-5" >{{ $offical->name }}</td>
-                                    <td class ="px-5" >{{ $offical->link }}</td>
-                                    <td class ="px-5" >{{ $offical->code }}</td>
+                                    <td class ="px-5" >{{ $officalTask->id }}</td>
+                                    <td class ="px-5" >{{ $officalTask->name }}</td>
+                                    <td class ="px-5" >{{ $officalTask->link }}</td>
+                                    <td class ="px-5" >{{ $officalTask->code }}</td>
                                     <td class ="px-5" >
                                     <div style= "width : 100%; display: flex ; justify-content: center;" >
 
-                                        <img src="{{ $offical->image }}" alt="image" style = "width : 30px; height : auto">
+                                        <img src="{{ $officalTask->image }}" alt="image" style = "width : 30px; height : auto">
                                     </div>    
                                         </td>
                                     <td class="px-5 flex justify-center py-3 ">
-                    <form  action="{{ route('view_offical_tasks', $offical->id) }}" method="GET" class="inline mx-5">
+                    <form  action="{{ route('view_offical_tasks', $officalTask->id) }}" method="GET" class="inline mx-5">
                         <button type="submit" class="text-blue-500 hover:text-blue-700">
                             <i class="fas fa-edit"></i>
                         </button>
                     </form>
-                    <form  action="{{ route('delete_offical_tasks', $offical->id) }}"   method="POST" class="inline mx-5" onsubmit="return confirm('Are you sure you want to delete this mission?');">
+                    <form  action="{{ route('delete_offical_tasks', $officalTask->id) }}"   method="POST" class="inline mx-5" onsubmit="return confirm('Are you sure you want to delete this mission?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="text-red-500 hover:text-red-700">

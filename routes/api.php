@@ -10,9 +10,11 @@ use App\Http\Controllers\ReferralTaskController;
 use App\Http\Controllers\TelegramUserController;
 use App\Http\Controllers\UserMissionController;
 use App\Http\Controllers\UserTaskController;
+use App\Http\Controllers\TelegramUserTaskController;
 use App\Http\Controllers\TaskStatusController;
 use App\Http\Controllers\OfficalTaskController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\TelegramUserDailyTaskController;
 use App\Http\Middleware\UpdateLastActive;
 /*
 |--------------------------------------------------------------------------
@@ -43,11 +45,12 @@ Route::middleware('auth:sanctum', UpdateLastActive::class)->group(function () {
         
 
         // Offical Tasks
+        Route::get('/offical_tasks', [OfficalTaskController::class, 'getDataClient'])->name('offical_tasks'); // Admin creates tasks
         Route::post('/offical_tasks/{id}', [UserTaskController::class, 'verifyTask']); // User verifies tasks
         
 
 
-        Route::get('/missions/asdasd', [UserMissionController::class, 'index']);
+        Route::get('/missions', [UserMissionController::class, 'index']);
         Route::post('/missions', [UserMissionController::class, 'store']);
         Route::post('/missions/{id}/verify', [UserMissionController::class, 'verifyCode']);
 
@@ -68,7 +71,8 @@ Route::middleware('auth:sanctum', UpdateLastActive::class)->group(function () {
 
         // Regular tasks
         Route::get('tasks', [UserTaskController::class, 'index']);
-        Route::post('tasks/{task}', [UserTaskController::class, 'store']);
+        Route::post('/telegram-user-tasks/submit', [TelegramUserTaskController::class, 'submitTask']);
+        Route::post('/telegram-user-daily-tasks/update-status', [TelegramUserDailyTaskController::class, 'updateTaskStatus']);        Route::post('tasks/{task}', [UserTaskController::class, 'store']);
         Route::post('tasks/{task}/claim', [UserTaskController::class, 'claim']);
 
         // Referral tasks

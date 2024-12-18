@@ -31,8 +31,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/user/{user_id}', [AdminController::class, 'eachUser'])->name('each_user_view');
 
 
-    Route::get('/offical_tasks', [OfficalTaskController::class, 'index'])->name('offical_tasks'); // Admin creates tasks
     Route::get('/offical_tasks/create', [AdminController::class, 'viewCreateOfficalTasks'])->name('view_create_offical_tasks'); // Admin creates tasks
+    Route::get('/offical_tasks', [AdminController::class, 'getAllOfficalTask'])->name('offical_tasks'); // Admin creates tasks
     Route::post('/offical_tasks', [AdminController::class, 'storeOfficalTasks'])->name('store_offical_tasks'); // Admin creates tasks
     Route::get('/offical_tasks/status', [AdminController::class, 'getOfficalTaskStatus']); // Admin gets task statuses
     Route::delete('/offical_tasks/delete/{id}', [AdminController::class, 'deleteOfficalTasks'])->name('delete_offical_tasks');; // Admin gets task statuses
