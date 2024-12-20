@@ -34,7 +34,11 @@
                             </div>
                             <div>Telegram Id : {{ $user->telegram_id}} </div>
                             <div>Balance : {{ $user->balance}} </div>
-                            <div>Referrals : {{ $user->balance}}</div>
+                            <div>Referrals : @if($user->referred_by)
+    {{ $user->referred_by }}
+@else
+   <span style = 'color : red;' > No Referrals </span>
+@endif</div>
                             <div>Payment Verification :    @if ($user->payment_verified)
   <span style = "color : rgb(4, 209, 8);" class = " font-bold" >Verified </span>
     @else
@@ -272,19 +276,13 @@
                 <div class="p-6 bg-white border-b border-gray-200">
                     <h1 class="text-2xl font-bold mb-4">Payment Details <span></span> </h1>
                     <div class="w-full  grid grid-cols-2 " >
-                            <div  >
-                              First Name  :   {{ $user->first_name}}
+                            <div style = 'font-size : 18px;'  class = 'font-bold ' >
+                            Account Holder  :   {{ $paymentMethods[0]->account_holder_name}}
                             </div>
-                            <div>
-                              Last Name  :   {{ $user->last_name}}
-                            </div>
-                            <div>Telegram Id : {{ $user->telegram_id}} </div>
-                            <div>Balance : {{ $user->balance}} </div>
-                            <div>Referrals : {{ $user->balance}}</div>
-                            <div>Payment Method : {{ $user->balance}}</div>
-                            <div>Offical Tasks : {{ $user->balance}}</div>
-                            <div> Tasks : {{ $user->balance}}</div>
-                            <div> Daily Tasks : {{ $user->balance}}</div>
+                            <div style = 'font-size : 18px;'  class = 'font-bold ' >Account Number : {{ $paymentMethods[0]->account_number}} </div>
+                            <div style = 'font-size : 18px;'  class = 'font-bold ' >Method : {{ $paymentMethods[0]->method}} </div>
+                            <div style = 'font-size : 18px;'  class = 'font-bold ' >Balance : {{ $user->balance}}</div>
+                            
                     </div>
                 </div>
             </div>

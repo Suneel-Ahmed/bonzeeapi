@@ -10,8 +10,10 @@ class PaymentMethodController extends Controller
     //
     public function index(Request $request)
     {
-        $user = $request->user(); // Get authenticated user
-        return response()->json($user->paymentMethods, 200);
+        // $user = $request->user();
+       $paymentMethods = PaymentMethod::where('user_id', 3)->get();
+      
+        return response()->json($paymentMethods, 200);
     }
 
     public function store(Request $request)

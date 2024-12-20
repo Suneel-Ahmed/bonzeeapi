@@ -9,13 +9,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('/dashboard');
 });
-Route::get('/test-login', function () {
-    $credentials = ['email' => 'sunailahmad7@gmail.com', 'password' => 'password'];
-    if (Auth::attempt($credentials)) {
-        return redirect('/dashboard');
-    }
-    return 'Login failed.';
-});
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

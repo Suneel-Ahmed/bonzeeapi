@@ -9,6 +9,7 @@ use App\Models\Offical_partnersModel;
 use App\Models\OfficalTask;
 use App\Models\TelegramUserTask;
 use App\Models\UserTaskStatus;
+use App\Models\PaymentMethod;
 use App\Models\TelegramUserDailyTask;
 
 
@@ -43,7 +44,6 @@ class AdminController extends Controller
         $completedTasks = UserTaskStatus::where('user_id', $user_id)->count();
         // Return the view with the user data
         $remainingTasks = $tasksCount - $completedTasks;
-       
         $tasksStatus = [
             'all_tasks' => $tasksCount,
             'remaining_tasks' => $remainingTasks,
@@ -52,8 +52,12 @@ class AdminController extends Controller
         $submittedTasksCount = TelegramUserTask::where('telegram_user_id', $user_id)
         ->where('is_submitted', true)
         ->count();
-
-
+        // PaymentMethod
+        $paymentMethods = PaymentMethod::get();
+        if ($paymentMethods->isEmpty()) {
+            return response()->json(['success' => false, 'message' => 'No payment methods found'], 404);
+        }
+        // $paymentMethods = $user->paymentMethods;
         $completedDailyTasks = TelegramUserDailyTask::where('telegram_user_id', $user_id)
         ->where('completed', true)
         ->count();
@@ -61,7 +65,6 @@ class AdminController extends Controller
 
         $remainingDailyTasks = $dailyTasks - $completedDailyTasks;
         $remainTasks = $allTasksCount - $submittedTasksCount;
-        
         
         $earnTasks = [
             'all_tasks' => $allTasksCount,
@@ -77,9 +80,10 @@ class AdminController extends Controller
             'completed_tasks' => $completedDailyTasks,
         ];
 
-        return view('each_user_view', compact('user' , 'tasksStatus' , 'earnTasks' , 'dailytasksStatus'));
+        return view('each_user_view', compact('user' , 'tasksStatus' , 'earnTasks' , 'dailytasksStatus' , 'paymentMethods' ));
     }
     
+ 
  
  
     // Get All Offical Tasks
