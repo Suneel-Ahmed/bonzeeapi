@@ -22,7 +22,14 @@
             <p class="text-2xl">{{ $officalTask }}</p>
         </div>
     </div>
-
+<div class = 'shadow-md'  style = ' padding : 20px 10px ; margin : 30px 0px; align-items: center; display: flex; justify-content : space-between; ' >
+    <h1  style = 'font-size : 20px; font-weight: bold; ' >
+        Easypaisa And JaazCash Feature
+    </h1>
+    <button>
+        Lock / Unlock
+    </button>
+</div>
     <!-- Graph Section -->
     <div class="bg-white shadow-md rounded p-4">
     <canvas id="dashboardChart"></canvas>

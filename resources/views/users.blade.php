@@ -10,6 +10,24 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <h1 class="text-2xl font-bold mb-4">User List</h1>
+                    
+                    <div style = 'display : flex; justify-content : space-between ; margin : 20px 0px;' >
+                    <form method="GET" action="{{ route('users') }}"  class=" flex items-center">
+                            <label for="sort" class="mr-2">Sort By:</label>
+                            <select name="sort" id="sort" class="border-gray-300 rounded-md shadow-sm" onchange="this.form.submit()">
+                                <option value="">Default</option>
+                                <option value="newest" {{ request('sort') === 'newest' ? 'selected' : '' }}>Newest to Oldest</option>
+                                <option value="oldest" {{ request('sort') === 'oldest' ? 'selected' : '' }}>Oldest to Newest</option>
+                                <option value="high_balance" {{ request('sort') === 'high_balance' ? 'selected' : '' }}>High to Low Balance</option>
+                                <option value="low_balance" {{ request('sort') === 'low_balance' ? 'selected' : '' }}>Low to High Balance</option>
+                            </select>
+                        </form>
+                        <div style = "" >
+                            <button style = "padding : 10px 15px; background-color : green; color : white; border-radius : 20px " >Download Sheet</button>
+                        </div>
+                        </div>
+
+
                     <table class="min-w-full">
                         <thead>
                             <tr>

@@ -28,9 +28,29 @@ class AdminController extends Controller
 
  
 
-    public function users()
+    public function users(Request $request)
     {
-        $users = TelegramUser::all();
+        $query  = TelegramUser::query();
+        $sort = $request->input('sort');
+        switch ($sort) {
+            case 'newest':
+                $query->orderBy('created_at', 'desc');
+                break;
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'high_balance':
+                $query->orderBy('balance', 'desc');
+                break;
+            case 'low_balance':
+                $query->orderBy('balance', 'asc');
+                break;
+            default:
+                $query->orderBy('id', 'asc'); // Default sorting
+                break;
+        }
+
+        $users = $query->get();
         return view('users', compact('users'));
     }
 
