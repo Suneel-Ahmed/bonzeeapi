@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PaymentMethod;
+use App\Models\PaymentMethodLock;
 use App\Models\TelegramUser;
 
 class PaymentMethodController extends Controller
@@ -16,6 +17,7 @@ class PaymentMethodController extends Controller
         return response()->json($paymentMethods, 200);
     }
 
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -25,16 +27,28 @@ class PaymentMethodController extends Controller
             'account_number' => 'required|string',
         ]);
     
+        // Check if the method is Easypaisa or JaazCash and locked is false globally
+        if (in_array($validated['method'], ['Easypaisa', 'JaazCash' , 'easypaisa' , 'jaazcash' , 'EasyPaisa' , 'Jaazcash'])) {
+            $isLocked = PaymentMethodLock::where('locked', true) // Check for locked status
+                ->exists();
+    
+            if (!$isLocked) { // If no locked record exists for this method, block addition
+                return response()->json([
+                    'message' => "The {$validated['method']} payment method is currently locked and cannot be added.",
+                ], 403); // Forbidden
+            }
+        }
+    
         // Check if the payment method already exists for the user
         $existingPaymentMethod = PaymentMethod::where('user_id', $validated['user_id'])
-                                              ->where('method', $validated['method'])
-                                              ->where('account_number', $validated['account_number'])
-                                              ->first();
+            ->where('method', $validated['method'])
+            ->where('account_number', $validated['account_number'])
+            ->first();
     
         if ($existingPaymentMethod) {
             return response()->json([
                 'message' => 'This payment method already exists for this user.',
-            ], 400); // Return a 400 Bad Request response
+            ], 400); // Bad Request
         }
     
         // If no existing payment method, create a new one
@@ -44,15 +58,20 @@ class PaymentMethodController extends Controller
             'account_holder_name' => $validated['account_holder_name'],
             'account_number' => $validated['account_number'],
         ]);
+    
         $user = TelegramUser::find($validated['user_id']);
         if ($user) {
             $user->update(['payment_verified' => true]);
         }
+    
         return response()->json([
             'paymentMethod' => $paymentMethod,
             'message' => 'Payment method added successfully.',
         ]);
     }
+    
+    
+    
     
 
 

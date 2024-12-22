@@ -20,7 +20,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/users', [AdminController::class, 'users'])->name('users');
     
     // Payment Methods : 
-   
+    Route::post('/payment-method/toggleLock', [AdminController::class, 'toggleLock'])->name('toggleLock');
+
     // User 
     Route::get('/user/{user_id}', [AdminController::class, 'eachUser'])->name('each_user_view');
 

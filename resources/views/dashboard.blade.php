@@ -22,13 +22,67 @@
             <p class="text-2xl">{{ $officalTask }}</p>
         </div>
     </div>
+  <style>
+    input[type="radio"] {
+        display: none;
+    }
+
+    label {
+        cursor: pointer;
+        margin-right: 10px;
+    }
+
+    #toggleButton {
+        margin-top: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    #on:checked + label {
+        font-weight: bold;
+        color: green;
+    }
+
+    #off:checked + label {
+        font-weight: bold;
+        color: red;
+    }
+</style>
+
 <div class = 'shadow-md'  style = ' padding : 20px 10px ; margin : 30px 0px; align-items: center; display: flex; justify-content : space-between; ' >
     <h1  style = 'font-size : 20px; font-weight: bold; ' >
         Easypaisa And JaazCash Feature
     </h1>
-    <button>
-        Lock / Unlock
-    </button>
+    <form action="{{ route('toggleLock') }}" method="POST">
+    @csrf
+    <div>
+        <input type="radio" id="on" name="locked" value="1" onchange="this.form.submit()" 
+            @if($lockStatus && $lockStatus[0]->locked == 1) checked @endif>
+        <label for="on">On</label>
+
+        <input type="radio" id="off" name="locked" value="0" onchange="this.form.submit()" 
+            @if($lockStatus && $lockStatus[0]->locked == 0) checked @endif>
+        <label for="off">Off</label>
+    </div>
+</form>
+<script>
+    const toggleButton = document.getElementById('toggleButton');
+    const onRadio = document.getElementById('on');
+    const offRadio = document.getElementById('off');
+
+    toggleButton.addEventListener('click', () => {
+        if (onRadio.checked) {
+            onRadio.checked = false;
+            offRadio.checked = true;
+            toggleButton.textContent = "Off";
+        } else {
+            offRadio.checked = false;
+            onRadio.checked = true;
+            toggleButton.textContent = "On";
+        }
+    });
+</script>
+
 </div>
     <!-- Graph Section -->
     <div class="bg-white shadow-md rounded p-4">

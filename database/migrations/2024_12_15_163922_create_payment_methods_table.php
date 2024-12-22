@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('method'); // Payment method name (e.g., Easypaisa, Binance)
             $table->string('account_holder_name');
             $table->string('account_number');
-            $table->boolean('locked')->default(false); // Lock field
+            $table->boolean('locked'); // Lock field
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('telegram_users')->onDelete('cascade');

@@ -10,6 +10,7 @@ use App\Models\OfficalTask;
 use App\Models\TelegramUserTask;
 use App\Models\UserTaskStatus;
 use App\Models\PaymentMethod;
+use App\Models\PaymentMethodLock;
 use App\Models\TelegramUserDailyTask;
 
 
@@ -23,7 +24,8 @@ class AdminController extends Controller
         $taskCount = Task::count();
         $dailyTaskCount = DailyTask::count();
         $officalTask = OfficalTask::count();
-        return view('dashboard', compact('userCount', 'taskCount', 'dailyTaskCount' , 'officalTask'));
+        $lockStatus = PaymentMethodLock::get();
+        return view('dashboard', compact('userCount', 'taskCount', 'dailyTaskCount' , 'officalTask' , 'lockStatus'));
     }
 
  
@@ -103,8 +105,40 @@ class AdminController extends Controller
         return view('each_user_view', compact('user' , 'tasksStatus' , 'earnTasks' , 'dailytasksStatus' , 'paymentMethods' ));
     }
     
- 
- 
+    public function toggleLock(Request $request)
+    {
+        // Validate the incoming request to ensure 'locked' is a boolean
+        $validated = $request->validate([
+            'locked' => 'required|boolean', // Ensuring locked is either 1 (true) or 0 (false)
+        ]);
+    
+        // Retrieve the 'locked' status from the request
+        $lockedStatus = $validated['locked'] ? true : false; // Convert to boolean (true/false)
+    
+        // Update the lock status for payment methods with specific IDs
+        $updated = PaymentMethodLock::whereIn('id', [1]) // Replace with the actual IDs
+            ->update(['locked' => $lockedStatus]);
+    
+        // Check if the update was successful
+        if ($updated) {
+            return redirect()->back()->with('success', 'Lock status updated successfully!');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update lock status.');
+        }
+    }
+    
+
+    public function getLockStatus()
+{
+    // Retrieve the current lock status for the specific method
+    $lockStatus = PaymentMethodLock::where('id', 1)->first(); // Replace with the actual ID or logic
+
+    // Return the lock status to the frontend
+    return view('your-view', ['lockStatus' => $lockStatus]);
+}
+    
+    
+    
  
     // Get All Offical Tasks
     public function getAllOfficalTask() {

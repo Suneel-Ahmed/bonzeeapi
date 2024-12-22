@@ -15,6 +15,9 @@ class PaymentMethod extends Model
         'locked',
     ];
 
+    protected $attributes = [
+        'locked' => false, // Default value for the locked attribute
+    ];
     public function user()
     {
         return $this->belongsTo(TelegramUser::class, 'user_id', 'id');
